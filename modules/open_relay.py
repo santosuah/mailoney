@@ -17,7 +17,7 @@ def or_module():
 
     class OpenRelay(SMTPServer):
 
-        def process_message(self, peer, mailfrom, rcpttos, data):
+        def process_message(self, peer, mailfrom, rcpttos, data, mail_options=None, rcpt_options=None):
             #setup the Log File
             if os.path.exists('logs/mail.log'):
                 logfile = open('logs/mail.log', 'a')
@@ -30,7 +30,7 @@ def or_module():
             logfile.write('Mail from: {}\n'.format(rcpttos[0]))
             logfile.write('Data:\n')
             logfile.write('\n')
-            logfile.write(data.encode())
+            logfile.write(data.decode())
             logfile.close
 
     def run():
