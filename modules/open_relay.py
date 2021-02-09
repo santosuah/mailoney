@@ -30,7 +30,7 @@ def or_module():
             logfile.write('Mail from: {}\n'.format(rcpttos[0]))
             logfile.write('Data:\n')
             logfile.write('\n')
-            logfile.write(data)
+            logfile.write(data.encode())
             logfile.close
 
     def run():

@@ -14,7 +14,7 @@ def pfserver():
     sys.path.append("../")
     import mailoney
 
-    print(mailoney.banner)
+    # print(mailoney.banner)
     # moving this below to see if this fixes the reconnection error
     # server set up
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -41,7 +41,7 @@ def pfserver():
 
     def handle_client(client_socket):
         # Send banner
-        client_socket.send('220 {} ESMTP Postfix\n'.format(mailoney.srvname))
+        client_socket.send('220 {} ESMTP Postfix\n'.format(mailoney.srvname).encode())
 
         while True:
 
@@ -50,16 +50,16 @@ def pfserver():
             while count < 10:
                 request=client_socket.recv(4096).lower()
 
-                if 'ehlo' in request:
-                    client_socket.send(ehlo)
+                if 'ehlo'.encode() in request:
+                    client_socket.send(ehlo.encode())
                     break
                 else:
-                    client_socket.send('502 5.5.2 Error: command not recognized\n')
+                    client_socket.send('502 5.5.2 Error: command not recognized\n'.encode())
                     count += 1
 
             #kill the client for too many errors
             if count == 10:
-                client_socket.send('421 4.7.0 {} Error: too many errors\n'.format(mailoney.srvname))
+                client_socket.send('421 4.7.0 {} Error: too many errors\n'.format(mailoney.srvname).encode())
                 client_socket.close()
                 break
 
@@ -68,23 +68,23 @@ def pfserver():
             while count < 10:
                 request = client_socket.recv(4096).lower()
 
-                if 'auth plain' in request:
+                if 'auth plain'.encode() in request:
                     #pull the base64 string and validate
-                    auth = request.split(' ')[2]
+                    auth = request.decode().split(' ')[2]
                     timestamp = strftime("%Y-%m-%d %H:%M:%S")
                     logfile.write('{}\tIP_Address: {}\tAuth: {}'.format(timestamp, addr[0], auth))
-                    client_socket.send('235 2.0.0 Authentication Failed\n')
+                    client_socket.send('235 2.0.0 Authentication Failed\n'.encode())
 
-                elif 'exit' in request:
+                elif 'exit'.encode() in request:
                     count = 10
                     break
                 else:
-                    client_socket.send('502 5.5.2 Error: command not recognized\n')
+                    client_socket.send('502 5.5.2 Error: command not recognized\n'.encode())
                     count += 1
 
             #kill the connection for too many failures
             if count == 10:
-                client_socket.send('421 4.7.0 {} Error: too many errors\n'.format(mailoney.srvname))
+                client_socket.send('421 4.7.0 {} Error: too many errors\n'.format(mailoney.srvname).encode())
                 client_socket.close()
                 break
 
@@ -93,7 +93,7 @@ def pfserver():
 
     while True:
 
-        client,addr = server.accept()
+        client, addr = server.accept()
 
         print("[*] Accepted connection from {}:{}".format(addr[0],addr[1]))
 
