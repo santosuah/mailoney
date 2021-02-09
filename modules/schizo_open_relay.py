@@ -25,7 +25,7 @@ def log_to_file(file_path, ip, port, data):
     with output_lock:
         with open(file_path, "a") as f:
             message = "[{0}][{1}:{2}] {3}".format(time.time(), ip, port, data.encode("string-escape"))
-            print file_path + " " + message
+            print(file_path + " " + message)
             f.write(message + "\n")
 
 def log_to_hpfeeds(channel, data):
@@ -74,7 +74,7 @@ class SMTPChannel(asynchat.async_chat):
         self.__fqdn = srvname
         try:
             self.__peer = conn.getpeername()
-        except socket.error, err:
+        except socket.error as err:
             # a race condition  may occur if the other end is closing
             # before we can get the peername
             self.close()
@@ -330,10 +330,10 @@ def module():
 
     def run():
         honeypot = SchizoOpenRelay((mailoney.bind_ip, mailoney.bind_port), None)
-        print '[*] Mail Relay listening on {}:{}'.format(mailoney.bind_ip, mailoney.bind_port)
+        print('[*] Mail Relay listening on {}:{}'.format(mailoney.bind_ip, mailoney.bind_port))
         try:
             asyncore.loop()
-            print "exiting for some unknown reason"
+            print("exiting for some unknown reason")
         except KeyboardInterrupt:
-            print 'Detected interruption, terminating...'
+            print('Detected interruption, terminating...')
     run()
